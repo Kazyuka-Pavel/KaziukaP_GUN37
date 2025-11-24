@@ -1,0 +1,68 @@
+{
+    "name": "Controls",
+    "maps": [
+        {
+            "name": "Game",
+            "id": "55433a9d-63a3-449d-896d-50c3f2d85954",
+            "actions": [
+                {
+                    "name": "Restart",
+                    "type": "Button",
+                    "id": "eb32e537-3a65-49ee-9f09-e3a5852a96d6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7d607963-7109-483b-93f8-8ca4568cfda4",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Restart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Menu",
+            "id": "ac8cd0a1-d73d-45a9-abb5-2b656f5f6566",
+            "actions": [
+                {
+                    "name": "StrartGame",
+                    "type": "Button",
+                    "id": "c7ceb3a2-c9a6-4771-bc2c-07df932e7cd1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7003561e-be49-468f-94c1-9905197caedf",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StrartGame",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Game",
+            "bindingGroup": "Game",
+            "devices": []
+        }
+    ]
+}
