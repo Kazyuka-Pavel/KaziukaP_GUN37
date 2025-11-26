@@ -12,6 +12,8 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
     private MeshRenderer selectMesh;
     private Unit _unit;
 
+    public Dictionary<NeighbourType, Cell> Neighbours {  get; set; } = new Dictionary<NeighbourType, Cell>(8);
+
     public event Action<Cell> OnPointerClickEvent;
 
     private void Awake()
@@ -21,6 +23,8 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
 
         focusMesh   = focus.gameObject.GetComponent<MeshRenderer>();
         selectMesh  = select.gameObject.GetComponent<MeshRenderer>();
+
+
     }
 
     public void SetSelect(Material material)

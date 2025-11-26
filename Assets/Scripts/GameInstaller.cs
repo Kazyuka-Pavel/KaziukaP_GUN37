@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 using Zenject;
 
@@ -13,14 +14,15 @@ public class GameInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
+        SignalBusInstaller.Install(Container);
+        Container.DeclareSignal<GameEvent>();
+        Container.DeclareSignal<GameStatus>();
+
         _controls = new Controls();
         _controls.Menu.Disable();
         _controls.Game.Enable();
 
         Container.BindInstance(_controls.Game).AsSingle();
-        Container.BindInstance(_cellManager).AsSingle();
-        Container.BindInstance(_sceneController).AsSingle();
-        //Container.BindInstance(_unit).AsSingle();
 
         //Test
         var test = _controls.Game.Restart.ReadValue<float>();

@@ -14,6 +14,15 @@ public class CellManager : MonoBehaviour
 
     public Action<Cell> OnCellClicked;
 
+    /// <summary>
+    /// Получаем ячейку и уведомление, что есть значение
+    /// </summary>        
+    public bool TryGet(Cell source, NeighbourType type, out Cell cell)
+    {        
+        var key = new CellNeighbour(type, source);
+        return _neighbours.TryGetValue(key, out cell);
+    }
+
     public void Awake()
     {
         _cells = FindObjectsOfType<Cell>();
@@ -47,11 +56,13 @@ public class CellManager : MonoBehaviour
                 if (type != default)
                 {
                     var key = new CellNeighbour(type, _cells[i]);
-                    //var check = _neighbours.TryGetValue(key, out var cell);
-                    if (Vector3.Distance(source, destination) <= 1)
-                    {
-                        _neighbours.Add(key, _cells[j]);
-                    }
+                    var check = _neighbours.TryGetValue(key, out var cell)
+                    ? Vector3.Distance(source, cell.transform.position)
+                        :float.MaxValue;
+
+                    distance = Vector3.Distance(source, destination);
+                    if (distance < check)
+                        _neighbours[key] = _cells[i];
                 }
             }
         }
@@ -83,14 +94,18 @@ public class CellManager : MonoBehaviour
         }
     }
 
-    struct CellNeighbour
+    private readonly struct CellNeighbour : IEquatable<CellNeighbour> 
     {
-        public NeighbourType neighbourType;
-        public Cell cell;
+        private readonly NeighbourType _neighbourType;
+        private readonly Cell _cell;
         public CellNeighbour(NeighbourType neighbourType, Cell cell)
-        {
-            this.neighbourType = neighbourType;
-            this.cell = cell;
-        }
+            => (_neighbourType, _cell) = (neighbourType, cell);
+        public bool Equals(CellNeighbour other) 
+            => _neighbourType == other._neighbourType && Equals(_cell, other._cell);
+        public override bool Equals(object obj)
+            => obj is CellNeighbour other && Equals(other);
+        public override int GetHashCode()
+            => unchecked(HashCode.Combine(_neighbourType, _cell) - 13);
+
     }
 }
