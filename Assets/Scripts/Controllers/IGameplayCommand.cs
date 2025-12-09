@@ -4,6 +4,6 @@ using UnityEngine;
 
 public interface IGameplayCommand 
 {
-    IEnumerable<Cell>   Variants { get; }
-    void Interact(Cell cell);
+    //ISharedData _data;     
+    //private CellManager _battlefield
 }

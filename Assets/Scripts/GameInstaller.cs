@@ -21,11 +21,9 @@ public class GameInstaller : MonoInstaller
         _controls = new Controls();
         _controls.Menu.Disable();
         _controls.Game.Enable();
-
         Container.BindInstance(_controls.Game).AsSingle();
 
-        //Test
-        var test = _controls.Game.Restart.ReadValue<float>();
+        Container.BindInstance(FindAnyObjectByType<Cell>());
 
         _cellManager.OnCellClicked += CellManagerOnCellClicked;
     }
