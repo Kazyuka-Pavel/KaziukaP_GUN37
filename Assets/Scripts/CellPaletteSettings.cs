@@ -20,6 +20,10 @@ public class CellPaletteSettings : ScriptableObject
     public Material AttackCell { get; private set; }
 
     [field: SerializeField]
+    [field: Tooltip("Клетка для подстверждения действия")]
+    public Material ConfirmCell { get; private set; }    
+
+    [field: SerializeField]
     [field: Tooltip("Клетка доступная и для атаки и для движения")]
     public Material MoveAndAttackCell { get; private set; }
 }

@@ -11,14 +11,37 @@ public class BattleController : MonoBehaviour
     private ISharedData _data;                  //injected
     private SignalBus _signal;                  //injected
     private Controls.GameActions _controls;     //injected
-    private PlayerController _battlefield;      //injected
+    private Battlefield _battlefield;           //injected
 
+    private void Construct(IGameplayCommand command, ISharedData data, SignalBus signal,Battlefield battlefield, Controls.GameActions controls)
+    {
+        (_command, _data, _signal, _battlefield, _controls) = (command, data, signal, battlefield, controls);
+        _battlefield.OnCellClicked += _command.Interact;
+        _controls.Cancel.performed += OnCancel;
+        _controls.Confirm.performed += OnConfirm;
+        _signal.Subscribe<GameEvent>(Callback); //Подпись на событие GameEvent
+    }
+
+    private void OnConfirm(InputAction.CallbackContext obj)
+    {
+        if (_data.Destination == null)
+        {
+            Debug.Log("Non selected cell");
+            return;
+        }
+
+        _signal.Fire(GameStatus.Confirm);
+        _signal.Fire(GameEvent.Confirm);
+    }
+
+    // Обработка инпута. Стандартный экшен.
     private void OnCancel(InputAction.CallbackContext obj)
     {
         _data.Event = GameEvent.Cancel;
         _data.Status = GameStatus.Select;
     }
 
+    //Переход в следующий режим
     private void Callback(GameEvent arg)
     {
         if (arg is not GameEvent.Select) return;

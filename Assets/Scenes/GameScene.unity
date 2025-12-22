@@ -268,7 +268,8 @@ GameObject:
   m_Component:
   - component: {fileID: 232092828}
   - component: {fileID: 232092827}
-  - component: {fileID: 232092826}
+  - component: {fileID: 232092829}
+  - component: {fileID: 232092830}
   m_Layer: 0
   m_Name: GameInstaller
   m_TagString: Untagged
@@ -276,21 +277,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &232092826
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 232092825}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c4c230d4b55b83b4bae4601b3c102073, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _cellManager: {fileID: 0}
-  _sceneController: {fileID: 0}
-  _cellPaletteSettings: {fileID: 0}
 --- !u!114 &232092827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -305,7 +291,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scriptableObjectInstallers: []
   _monoInstallers:
-  - {fileID: 232092826}
+  - {fileID: 232092830}
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -322,8 +308,7 @@ MonoBehaviour:
       m_Calls: []
   _parentNewObjectsUnderSceneContext: 0
   _contractNames: []
-  _parentContractNames:
-  - Main
+  _parentContractNames: []
 --- !u!4 &232092828
 Transform:
   m_ObjectHideFlags: 0
@@ -339,6 +324,32 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &232092829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 232092825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e091b89c4291f344ea2a0d5ec420ed49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &232092830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 232092825}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4c230d4b55b83b4bae4601b3c102073, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cellManager: {fileID: 0}
+  _sceneController: {fileID: 232092829}
 --- !u!1001 &277793734
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1131,7 +1142,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -21, y: 453}
+  m_AnchoredPosition: {x: 663, y: 453}
   m_SizeDelta: {x: 600, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1338234231
@@ -1735,7 +1746,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5126357618470596999, guid: f02b3b190be24cd4c896171e9cb19df3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.53
+      value: 0.911
       objectReference: {fileID: 0}
     - target: {fileID: 5126357618470596999, guid: f02b3b190be24cd4c896171e9cb19df3, type: 3}
       propertyPath: m_LocalPosition.z

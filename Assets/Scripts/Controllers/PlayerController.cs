@@ -25,29 +25,29 @@ public class PlayerController : MonoBehaviour
         if (arg is not GameEvent.Confirm) return; //Если не подтверждено, то продолжить
         if (_data.Status is not GameStatus.Confirm) return; //Проверяем, что находимся в игровом статусе Confirm
 
-        _data.Status = GameStatus.Lock;
+        _data.Status = GameStatus.Lock; //Лочится управление
         var destination = _data.Destination;
 
         //Движение к точке
-        //if (_data.Target.IsEmpty)
-        //{
-        //    destination.OnMoveEndCallback += OnEndPlay;
-        //    destination.Move(_data.Target);
-        //}
-        ////Атака по цели
-        //else
-        //{
-        //    var target = _data.Target.Unit;
-        //    target.Health -= destination.Settings.Stats.Damage;
-        //    if (target.Health <= 0)
-        //    {
-        //        _data.Target.Unit = null;
-        //        Destroy(target.gameObject);
-        //    }
-        //    _data.Target = null;
-        //    _data.Status = GameStatus.Unlock;
-        //}
-        
+        if (_data.Target.Unit == null)
+        {
+            destination.OnMoveEndCallback += OnEndPlay;
+            destination.Move(_data.Target);
+        }
+        //Атака по цели
+        else
+        {
+            //var target = _data.Target.Unit;
+            //target.Health -= destination.Settings.Stats.Damage;
+            //if (target.Health <= 0)
+            //{
+            //    _data.Target.Unit = null;
+            //    Destroy(target.gameObject);
+            //}
+            //_data.Target = null;
+            //_data.Status = GameStatus.Unlock;
+        }
+
     }
 
     public void Move(Cell cell)
@@ -75,8 +75,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnEndPlay() 
     {
-        //_data.Status = GameStatus.Unlock;
-        //_data.Destination.OnMoveEndCallbalck -= OnEndPlay;
+        _data.Status = GameStatus.Unlock;
+        _data.Destination.OnMoveEndCallback -= OnEndPlay;
         //if (_data.Destination.Settings.Mobility.MoveAndAttackInTurn)
         //{
         //    _data.Target = null;

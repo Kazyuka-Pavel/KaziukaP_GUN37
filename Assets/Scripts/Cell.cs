@@ -10,9 +10,7 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
 {
     private MeshRenderer focusMesh;
     private MeshRenderer selectMesh;
-    private Unit _unit;
-
-    public Dictionary<NeighbourType, Cell> Neighbours {  get; set; } = new Dictionary<NeighbourType, Cell>(8);
+    public Unit Unit { get; private set; }    
 
     public event Action<Cell> OnPointerClickEvent;
 
@@ -23,7 +21,6 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
 
         focusMesh   = focus.gameObject.GetComponent<MeshRenderer>();
         selectMesh  = select.gameObject.GetComponent<MeshRenderer>();
-
 
     }
 
@@ -37,16 +34,19 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
         selectMesh.enabled = false;
     }
 
+    //Событие через Рейкастер
     public void OnPointerClick(PointerEventData eventData)
     {
         OnPointerClickEvent.Invoke(this);
     }
 
+    //Событие через Рейкастер
     public void OnPointerEnter(PointerEventData eventData)
     {
         focusMesh.enabled = true;
     }
 
+    //Событие через Рейкастер
     public void OnPointerExit(PointerEventData eventData)
     {
         focusMesh.enabled = false;
@@ -54,6 +54,6 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
     
     public void SetUnit(Unit unit)
     {
-        _unit = unit;
+        Unit = unit;
     }
 }

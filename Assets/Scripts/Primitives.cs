@@ -11,7 +11,12 @@ public enum NeighbourType
 
 public enum Team
 {
-    Player1, Player2
+    Black, White
+}
+
+public enum Type
+{
+    Checker, Queen
 }
 
 public enum GameStatus
@@ -29,7 +34,7 @@ public enum GameEvent
 {
     Empty   = 0,
     Select  = 1, //Выбор какой-то клетки
-    Cancel  = 2, //Отмена последнего дейсвтия
-    Confirm = 3, //Подтвержение последнего дейсвтия
+    Cancel  = 2, //Отмена последнего действия
+    Confirm = 3, //Подтвержение последнего действия
 }
 
