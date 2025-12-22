@@ -42,7 +42,7 @@ public class Battlefield : IDisposable
 
     public Battlefield(SignalBus signal, ISharedData data, CellPaletteSettings palettes)
     {
-        _cells = FindObjectsOfType<Cell>();
+        _cells = UnityEngine.Object.FindObjectsOfType<Cell>();
         _neighbours = new Dictionary<CellNeighbour, Cell>(_cells.Length * 8);
         var positions = Array.ConvertAll(_cells, t => t.transform.position);
         var distance = 0f;
@@ -84,7 +84,7 @@ public class Battlefield : IDisposable
             }
         }
         ;
-        var units = FindObjectsOfType<Unit>();
+        var units = UnityEngine.Object.FindObjectsOfType<Unit>();
         var positionsj = Array.ConvertAll(units, t => t.transform.position);
         var iMin = 0;
         for (int j = 0, jMax = units.Length; j < jMax; j++)
@@ -109,11 +109,6 @@ public class Battlefield : IDisposable
                 _cells[iMin].SetUnit(units[j]);
             }
         }
-    }
-
-    private T[] FindObjectsOfType<T>()
-    {
-        throw new NotImplementedException();
     }
 
     public void Dispose()

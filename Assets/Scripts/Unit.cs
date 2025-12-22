@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
     [SerializeField]
-    public Team _team;
+    public Team Team { get; private set; }
     public Cell Cell {  get; private set; }
 
     public event Action OnMoveEndCallback;
@@ -24,7 +24,9 @@ public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
     }
 
     private float _speed = 1f;
-    private Type _type = Type.Checker;
+
+    [SerializeField]
+    private UnitGameSettings _settings;
 
     private IEnumerator OnMove(Cell cell)
     {

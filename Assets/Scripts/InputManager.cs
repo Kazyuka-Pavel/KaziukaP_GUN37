@@ -50,7 +50,12 @@ public class InputManager : MonoBehaviour
         }
         StopCoroutine(Loop());
         //Debug.Log("End");
-        if (i >= 1f) { _sceneController.RestartGameScene(); }
+        if (i >= 1f) {
+            _controls.Game.Restart.started -= Restart_started;
+            _controls.Game.Restart.performed -= Restart_performed;
+            _controls.Game.Restart.canceled -= Restart_canceled;
+            _sceneController.RestartGameScene(); 
+        }
     }
 
     private void Restart_started(UnityEngine.InputSystem.InputAction.CallbackContext obj)
