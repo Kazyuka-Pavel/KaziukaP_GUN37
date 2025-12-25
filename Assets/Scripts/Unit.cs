@@ -1,13 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
 
 public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
-    [SerializeField]
-    public Team Team { get; private set; }
+    [field: SerializeField]    public Team Team { get; private set; }
+    [field: SerializeField]    public UnitGameSettings Settings { get; private set; }
+    [SerializeField] private MeshRenderer cylinderMesh;
+    [SerializeField] private MeshRenderer queenMesh;
+    [Inject] private UnitsSettings _unitsSettings;
+
     public Cell Cell {  get; private set; }
 
     public event Action OnMoveEndCallback;
@@ -24,9 +30,6 @@ public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
     }
 
     private float _speed = 1f;
-
-    [SerializeField]
-    private UnitGameSettings _settings;
 
     private IEnumerator OnMove(Cell cell)
     {
@@ -55,5 +58,22 @@ public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
     internal object Select(Func<object, object> value)
     {
         throw new NotImplementedException();
+    }
+
+    private void Awake()
+    {
+        ResetSelect();
+    }    
+
+    public void SetSelect(Material material)
+    {
+        cylinderMesh.material = material;
+        queenMesh.material = material;
+    }
+
+    public void ResetSelect()
+    {
+        cylinderMesh.material = _unitsSettings[Team].Material;
+        queenMesh.material = _unitsSettings[Team].Material;
     }
 }

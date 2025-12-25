@@ -12,13 +12,13 @@ public class InputManager : MonoBehaviour
     [SerializeField]    private UnityEngine.UI.Image    _imageEm;
     [SerializeField]    private float                   _speed = 1;
     [Inject]            private SceneController         _sceneController;
-    [Inject]            private Controls                _controls;
+    [Inject]            private Controls.GameActions    _controls;
 
     private void Awake()
     {        
-        _controls.Game.Restart.started += Restart_started;
-        _controls.Game.Restart.performed += Restart_performed;
-        _controls.Game.Restart.canceled += Restart_canceled;        
+        _controls.Restart.started += Restart_started;
+        _controls.Restart.performed += Restart_performed;
+        _controls.Restart.canceled += Restart_canceled;        
     }
 
     private void Restart_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -51,9 +51,9 @@ public class InputManager : MonoBehaviour
         StopCoroutine(Loop());
         //Debug.Log("End");
         if (i >= 1f) {
-            _controls.Game.Restart.started -= Restart_started;
-            _controls.Game.Restart.performed -= Restart_performed;
-            _controls.Game.Restart.canceled -= Restart_canceled;
+            _controls.Restart.started -= Restart_started;
+            _controls.Restart.performed -= Restart_performed;
+            _controls.Restart.canceled -= Restart_canceled;
             _sceneController.RestartGameScene(); 
         }
     }

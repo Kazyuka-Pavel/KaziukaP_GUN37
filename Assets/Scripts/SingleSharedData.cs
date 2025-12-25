@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class SingleSharedData : ISharedData
 {
-    public bool Lock { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-    public GameEvent Event { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-    public GameStatus Status { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-    public Unit Destination { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-    public Cell Target { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    public bool Lock { get; set; }
+    public GameEvent Event { get; set; }
+    public GameStatus Status { get; set; }
+    public Unit Destination { get; set; }
+    public Cell Target { get; set; }
 }

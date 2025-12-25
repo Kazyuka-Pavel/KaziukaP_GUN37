@@ -153,8 +153,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0ffb9729f119a6458a8ab3a08a96f6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _team: 0
-  _settings: {fileID: 11400000, guid: dcfd97d05b5763a4dba54ba4a634b4fc, type: 2}
+  <Team>k__BackingField: 0
+  <Settings>k__BackingField: {fileID: 11400000, guid: dcfd97d05b5763a4dba54ba4a634b4fc, type: 2}
+  cylinderMesh: {fileID: 952561379648424157}
+  queenMesh: {fileID: 8033618900663754431}
 --- !u!1 &7910290124674718578
 GameObject:
   m_ObjectHideFlags: 0

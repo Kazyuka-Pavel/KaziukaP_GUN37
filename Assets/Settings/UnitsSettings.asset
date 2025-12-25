@@ -12,5 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a6bfe46c4f6d8f49be073e26b758085, type: 3}
   m_Name: UnitsSettings
   m_EditorClassIdentifier: 
-  <WhiteUnit>k__BackingField: {fileID: 0}
-  <BlackUnit>k__BackingField: {fileID: 0}
+  _default:
+    Material: {fileID: 0}
+    Team: 0
+  _presets:
+  - Material: {fileID: 2100000, guid: 186fc626f583e8e469f6f54620661b74, type: 2}
+    Team: 0
+  - Material: {fileID: 2100000, guid: fa0a8a655cce49249a349dd2ebfa940e, type: 2}
+    Team: 1

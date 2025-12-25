@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _default:
     Text: White
-    Color: {r: 0, g: 0, b: 0, a: 0}
-    Team: 1
-  _presets:
-  - Text: White
     Color: {r: 1, g: 1, b: 1, a: 0}
     Team: 1
+  _presets:
   - Text: Black
     Color: {r: 0, g: 0, b: 0, a: 0}
     Team: 0
+  - Text: White
+    Color: {r: 1, g: 1, b: 1, a: 0}
+    Team: 1

@@ -3,15 +3,21 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
+using Zenject;
 
 //Паттерн комманд
 
 public class CheckerCommand : IGameplayCommand
-// Определяет возможные комманды
+// Правила для шашек
 {
-    public IEnumerable<Cell> Variants { get; } //список выделейнных клеток доя отображения воможных ходов
-    private Battlefield _battlefield;
+    public IEnumerable<Cell> Variants { get; } //список выделейнных клеток доя отображения воможных ходов    
     public HashSet<Cell> Cells { get; private set; }
+
+    [Inject] private ISharedData _data;
+    [Inject] private ITurn _turn;
+    [Inject] private CellPaletteSettings _settings;
+    [Inject] private Battlefield _battlefield;
+    [Inject] private SignalBus _signal;               
 
     public void Calculate(Unit unit)
     {
@@ -42,7 +48,8 @@ public class CheckerCommand : IGameplayCommand
     {
         var cell = unit.Cell;
         //Ищем клетку, если есть - дальше, если нет - выход
-        while (_battlefield.TryGet(cell, direction, out var target)){
+        while (_battlefield.TryGet(cell, direction, out var target))
+        {
             //if (target.Unit == null) //если на клетке нет юнита, то можно туда сходить
             //{
             //    Cells.Add(target);
@@ -67,8 +74,19 @@ public class CheckerCommand : IGameplayCommand
     }
 
 
-public void Interact(Cell cell)
+    public void Interact(Cell cell)
     {
-        
+        if (_data.Status == GameStatus.Select)
+        {
+            if (cell.Unit != null && cell.Unit.Team == _turn.Current)
+            {
+                _data.Destination = cell.Unit;
+                _signal.Fire(GameEvent.Select);
+            }                        
+        }
+        //cell.SetSelect(_settings.SelectCell);        
     }
+
 }
+
+

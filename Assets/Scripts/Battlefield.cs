@@ -15,6 +15,8 @@ public class Battlefield : IDisposable
 
     private Dictionary<CellNeighbour, Cell> _neighbours;
     private Cell[] _cells;
+    private Unit[] _units;
+    
 
     private void Callback()
     {
@@ -22,9 +24,12 @@ public class Battlefield : IDisposable
         foreach (var cell in _cells)
             cell.ResetSelect();
 
+        foreach (var unit in _units)
+            unit.ResetSelect();
+
         //Подсветка выделенного
         if (_data.Destination != null)
-            _data.Destination.Cell.SetSelect(_paletters.SelectCell);
+            _data.Destination.SetSelect(_paletters.SelectCell);
 
         //Выбор материаа, в завсимости от статуса
         var mat = _data.Status switch
@@ -42,13 +47,17 @@ public class Battlefield : IDisposable
 
     public Battlefield(SignalBus signal, ISharedData data, CellPaletteSettings palettes)
     {
+        (_data, _paletters) = (data, palettes);
+        signal.Subscribe<GameEvent>(Callback);
+
         _cells = UnityEngine.Object.FindObjectsOfType<Cell>();
         _neighbours = new Dictionary<CellNeighbour, Cell>(_cells.Length * 8);
         var positions = Array.ConvertAll(_cells, t => t.transform.position);
         var distance = 0f;
         for (int i = 0, iMax = _cells.Length; i < iMax; i++)
         {
-            _cells[i].OnPointerClickEvent += OnCellClicked;
+            //_cells[i].OnPointerClickEvent += OnCellClicked; // не сработало
+            _cells[i].OnPointerClickEvent += Battlefield_OnPointerClickEvent;
 
             for (int j = 0, jMax = _cells.Length; j < jMax; j++)
             {
@@ -84,10 +93,10 @@ public class Battlefield : IDisposable
             }
         }
         ;
-        var units = UnityEngine.Object.FindObjectsOfType<Unit>();
-        var positionsj = Array.ConvertAll(units, t => t.transform.position);
+        _units = UnityEngine.Object.FindObjectsOfType<Unit>();
+        var positionsj = Array.ConvertAll(_units, t => t.transform.position);
         var iMin = 0;
-        for (int j = 0, jMax = units.Length; j < jMax; j++)
+        for (int j = 0, jMax = _units.Length; j < jMax; j++)
         {
             for (int i = 0, iMax = _cells.Length; i < iMax; i++)
             {
@@ -105,10 +114,15 @@ public class Battlefield : IDisposable
             }
             if (iMin != 0)
             {
-                units[j].SetCell(_cells[iMin]);
-                _cells[iMin].SetUnit(units[j]);
+                _units[j].SetCell(_cells[iMin]);
+                _cells[iMin].Unit = _units[j];
             }
         }
+    }
+
+    private void Battlefield_OnPointerClickEvent(Cell cell)
+    {
+        OnCellClicked?.Invoke(cell);
     }
 
     public void Dispose()

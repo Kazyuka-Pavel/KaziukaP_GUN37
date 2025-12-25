@@ -11,7 +11,7 @@ public enum NeighbourType
 
 public enum Team
 {
-    Black, White
+    White, Black
 }
 
 public enum Type
@@ -36,5 +36,6 @@ public enum GameEvent
     Select  = 1, //Выбор какой-то клетки
     Cancel  = 2, //Отмена последнего действия
     Confirm = 3, //Подтвержение последнего действия
+    NewTurn = 4, //Новый ход
 }
 

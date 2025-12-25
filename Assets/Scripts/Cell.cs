@@ -8,25 +8,17 @@ using Zenject;
 
 public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
-    private MeshRenderer focusMesh;
-    private MeshRenderer selectMesh;
-    public Unit Unit { get; private set; }    
+    [SerializeField] private MeshRenderer focusMesh;
+    [SerializeField] private MeshRenderer selectMesh;
+    public Unit Unit { get; set; }    
 
     public event Action<Cell> OnPointerClickEvent;
-
-    private void Awake()
-    {
-        var focus   = transform.Find("Focus");
-        var select  = transform.Find("Select");
-
-        focusMesh   = focus.gameObject.GetComponent<MeshRenderer>();
-        selectMesh  = select.gameObject.GetComponent<MeshRenderer>();
-
-    }
+    public bool IsEmpty => Unit == null;
 
     public void SetSelect(Material material)
     {
         selectMesh.enabled = true;
+        selectMesh.material = material;
     }
 
     public void ResetSelect()
@@ -37,7 +29,7 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
     //Событие через Рейкастер
     public void OnPointerClick(PointerEventData eventData)
     {
-        OnPointerClickEvent.Invoke(this);
+        OnPointerClickEvent?.Invoke(this);
     }
 
     //Событие через Рейкастер
@@ -52,8 +44,4 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
         focusMesh.enabled = false;
     }
     
-    public void SetUnit(Unit unit)
-    {
-        Unit = unit;
-    }
 }

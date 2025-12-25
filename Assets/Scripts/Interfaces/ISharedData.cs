@@ -10,4 +10,6 @@ public interface ISharedData
 
     Unit Destination {  get; set; } //ѕерсонаж выбранный
     Cell Target { get; set; } //ячейка цели
+    
+    //ICollection<Cell> Accessibles { get; }
 }

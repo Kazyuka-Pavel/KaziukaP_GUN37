@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1527614332908725226}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.12, z: 0}
+  m_LocalPosition: {x: 0, y: 0.503, z: 0}
   m_LocalScale: {x: 0.09214209, y: 1, z: 0.09141678}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -59,7 +59,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
@@ -134,7 +134,7 @@ Transform:
   m_GameObject: {fileID: 2589850319286780426}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.09, z: 0}
+  m_LocalPosition: {x: 0, y: 0.52, z: 0}
   m_LocalScale: {x: 0.054361068, y: 1, z: 0.05102336}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -165,7 +165,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
@@ -332,3 +332,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 566985ee1a5e253449070764162b454d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  focusMesh: {fileID: 6059302176712662061}
+  selectMesh: {fileID: 643906437213547663}

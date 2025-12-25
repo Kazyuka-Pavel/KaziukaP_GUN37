@@ -13,6 +13,7 @@ public class BattleController : MonoBehaviour
     private Controls.GameActions _controls;     //injected
     private Battlefield _battlefield;           //injected
 
+    [Inject]
     private void Construct(IGameplayCommand command, ISharedData data, SignalBus signal,Battlefield battlefield, Controls.GameActions controls)
     {
         (_command, _data, _signal, _battlefield, _controls) = (command, data, signal, battlefield, controls);
@@ -61,5 +62,5 @@ public class BattleController : MonoBehaviour
                 Debug.LogError("Incorrect value");
                 break;
         }
-    }
+    }   
 }
