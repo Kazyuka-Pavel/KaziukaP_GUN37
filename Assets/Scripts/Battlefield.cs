@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 
@@ -39,10 +42,10 @@ public class Battlefield : IDisposable
             _ => default(Material)
         };
         if (mat != null)
-            foreach (var cell in _command.Variants)
-                cell.SetSelect(mat);
+            foreach (var cell in _command.CellsDictionary)
+                cell.Key.SetSelect(mat);
         if (_data.Target != null)
-            _data.Destination.Cell.SetSelect(_paletters.ConfirmCell);
+            _data.Target.SetSelect(_paletters.ConfirmCell);
     }
 
     public Battlefield(SignalBus signal, ISharedData data, CellPaletteSettings palettes)
@@ -77,9 +80,9 @@ public class Battlefield : IDisposable
                     (-1, 1) => NeighbourType.BackwardRight,
                     (-1, 0) => NeighbourType.Backward,
                     (-1, -1) => NeighbourType.BackwardLeft,
-                    _ => default
+                    _ => NeighbourType.Empty
                 };
-                if (type != default)
+                if (type != NeighbourType.Empty)
                 {
                     var key = new CellNeighbour(type, _cells[i]);
                     var check = _neighbours.TryGetValue(key, out var cell)
@@ -88,7 +91,7 @@ public class Battlefield : IDisposable
 
                     distance = Vector3.Distance(source, destination);
                     if (distance < check)
-                        _neighbours[key] = _cells[i];
+                        _neighbours[key] = _cells[j];
                 }
             }
         }
@@ -98,6 +101,7 @@ public class Battlefield : IDisposable
         var iMin = 0;
         for (int j = 0, jMax = _units.Length; j < jMax; j++)
         {
+            _units[j].OnDestoroy += OnDestoroyUnit;
             for (int i = 0, iMax = _cells.Length; i < iMax; i++)
             {
                 var source = positionsj[j];
@@ -118,6 +122,11 @@ public class Battlefield : IDisposable
                 _cells[iMin].Unit = _units[j];
             }
         }
+    }
+
+    private void OnDestoroyUnit(Unit unit)
+    {
+        _units = _units.Where(val => val != unit).ToArray();
     }
 
     private void Battlefield_OnPointerClickEvent(Cell cell)

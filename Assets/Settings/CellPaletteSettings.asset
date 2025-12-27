@@ -15,5 +15,5 @@ MonoBehaviour:
   <SelectCell>k__BackingField: {fileID: 2100000, guid: ed9bf5dbced1d5d49b9d04481b4c086e, type: 2}
   <MoveCell>k__BackingField: {fileID: 2100000, guid: 78bbb73688ca0124dbb2a8554ad9e4fb, type: 2}
   <AttackCell>k__BackingField: {fileID: 2100000, guid: f43e0adbcb9eb1542aa9bf6a041efa9b, type: 2}
-  <ConfirmCell>k__BackingField: {fileID: 2100000, guid: fa0a8a655cce49249a349dd2ebfa940e, type: 2}
+  <ConfirmCell>k__BackingField: {fileID: 2100000, guid: e3b1e373452eca94f9ee31259df8a207, type: 2}
   <MoveAndAttackCell>k__BackingField: {fileID: 2100000, guid: 8811c10162a247a44be548bf605e48ff, type: 2}

@@ -332,5 +332,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 566985ee1a5e253449070764162b454d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  focusMesh: {fileID: 6059302176712662061}
-  selectMesh: {fileID: 643906437213547663}
+  focusMesh: {fileID: 643906437213547663}
+  selectMesh: {fileID: 6059302176712662061}

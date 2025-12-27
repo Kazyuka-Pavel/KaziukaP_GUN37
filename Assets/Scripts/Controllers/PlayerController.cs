@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -50,37 +51,15 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void Move(Cell cell)
-    {
-        StartCoroutine(OnMove(cell));
-    }
-
-    private IEnumerator OnMove(Cell cell) 
-    {
-        var source = transform;
-        var start = source.position;
-        var end = cell.transform.position;
-        var time = Vector3.Distance(start, end) / _speed;
-        var delta = 0f;
-        while (delta < time) 
-        {
-            source.position = Vector3.Lerp(start, end, delta / time);
-            delta += Time.deltaTime;
-            yield return null;
-        }
-
-        //Cell = cell;
-        //OnMoveEndCallback?.Invoke();
-    }
 
     private void OnEndPlay() 
-    {
-        _data.Status = GameStatus.Unlock;
+    {        
         _data.Destination.OnMoveEndCallback -= OnEndPlay;
-        //if (_data.Destination.Settings.Mobility.MoveAndAttackInTurn)
-        //{
-        //    _data.Target = null;
-        //    _data.Status = GameStatus.Attack;
-        //}
+        foreach (var cell in _data.Cells)
+        {
+            if (!cell.IsEmpty)
+                cell.Unit.DestroyGameObject();
+        }
+        _signal.Fire(GameEvent.NewTurn);        
     }
 }

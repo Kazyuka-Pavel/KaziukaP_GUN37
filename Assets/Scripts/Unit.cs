@@ -17,6 +17,7 @@ public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
     public Cell Cell {  get; private set; }
 
     public event Action OnMoveEndCallback;
+    public event Action<Unit> OnDestoroy;
 
     public void OnPointerClick(PointerEventData eventData) => Cell.OnPointerClick(eventData);
     
@@ -37,6 +38,7 @@ public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
 
         var start = source.position;
         var end = cell.transform.position;
+        end.y = start.y;
         var time = Vector3.Distance(start, end) / _speed;
         var delta = 0f;
         while (delta < time)
@@ -45,19 +47,15 @@ public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
             delta += Time.deltaTime;
             yield return null;
         }
-
+        Cell.Unit = null;
         Cell = cell;
+        cell.Unit = this;
         OnMoveEndCallback?.Invoke();
     }
 
     public void SetCell(Cell cell)
     {
         Cell = cell;
-    }
-
-    internal object Select(Func<object, object> value)
-    {
-        throw new NotImplementedException();
     }
 
     private void Awake()
@@ -69,11 +67,20 @@ public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
     {
         cylinderMesh.material = material;
         queenMesh.material = material;
+        Cell.SetSelect(material);
     }
 
     public void ResetSelect()
     {
         cylinderMesh.material = _unitsSettings[Team].Material;
         queenMesh.material = _unitsSettings[Team].Material;
+    }
+
+    public void DestroyGameObject()
+    {
+        Cell.Unit = null;
+        Cell = null;
+        OnDestoroy.Invoke(this);
+        Destroy(gameObject);
     }
 }

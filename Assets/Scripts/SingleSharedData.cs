@@ -9,4 +9,5 @@ public class SingleSharedData : ISharedData
     public GameStatus Status { get; set; }
     public Unit Destination { get; set; }
     public Cell Target { get; set; }
+    public List<Cell> Cells { get; set; } = new List<Cell>();
 }

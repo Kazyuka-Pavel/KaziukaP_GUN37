@@ -25,42 +25,61 @@ public class BattleController : MonoBehaviour
 
     private void OnConfirm(InputAction.CallbackContext obj)
     {
-        if (_data.Destination == null)
+        if (_data.Target == null)
         {
             Debug.Log("Non selected cell");
             return;
         }
 
-        _signal.Fire(GameStatus.Confirm);
+        _data.Status = GameStatus.Confirm;
+        _data.Event = GameEvent.Confirm;
+        //_signal.Fire(GameStatus.Confirm);
         _signal.Fire(GameEvent.Confirm);
     }
 
     // Обработка инпута. Стандартный экшен.
     private void OnCancel(InputAction.CallbackContext obj)
     {
-        _data.Event = GameEvent.Cancel;
-        _data.Status = GameStatus.Select;
+        _signal.Fire(GameEvent.Cancel);
     }
 
     //Переход в следующий режим
     private void Callback(GameEvent arg)
     {
-        if (arg is not GameEvent.Select) return;
-
-        switch (_data.Status)
+        switch (arg)
         {
-            case GameStatus.Select:
-                _signal.Fire(GameStatus.Move);
+            case GameEvent.NewTurn:
+                _data.Status = GameStatus.Select ;
+                _data.Target = null;
+                _data.Cells.Clear();
+                _data.Destination = null; 
+                _command.CellsDictionary.Clear();
                 break;
-            case GameStatus.Move:
-                _signal.Fire(GameStatus.Confirm);
-                break;
-            case GameStatus.Attack:
-                _signal.Fire(GameStatus.Confirm);
-                break;
-            case GameStatus.Confirm:
-                Debug.LogError("Incorrect value");
+            case GameEvent.Cancel:
+                _data.Status = GameStatus.Select;
+                _data.Target = null;
+                _data.Destination = null;
+                _data.Cells.Clear();
+                _command.CellsDictionary.Clear();
                 break;
         }
+        
+        //if (arg is not GameEvent.Select) return;
+
+        //switch (_data.Status)
+        //{
+        //    case GameStatus.Select:
+        //        _data.Status = GameStatus.Move;                
+        //        break;
+        //    case GameStatus.Move:
+        //        _signal.Fire(GameStatus.Confirm);
+        //        break;
+        //    case GameStatus.Attack:
+        //        _signal.Fire(GameStatus.Confirm);
+        //        break;
+        //    case GameStatus.Confirm:
+        //        Debug.LogError("Incorrect value");
+        //        break;
+        //}
     }   
 }

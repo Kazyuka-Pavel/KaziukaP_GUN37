@@ -117,6 +117,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5126357618470596999}
   - component: {fileID: 746884588361056983}
+  - component: {fileID: 267737825026784889}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -157,6 +158,18 @@ MonoBehaviour:
   <Settings>k__BackingField: {fileID: 11400000, guid: dcfd97d05b5763a4dba54ba4a634b4fc, type: 2}
   cylinderMesh: {fileID: 952561379648424157}
   queenMesh: {fileID: 8033618900663754431}
+--- !u!114 &267737825026784889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6364012316569565262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d47a736081cde7347a69d6b49c111220, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7910290124674718578
 GameObject:
   m_ObjectHideFlags: 0

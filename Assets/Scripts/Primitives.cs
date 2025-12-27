@@ -7,6 +7,7 @@ public enum NeighbourType
     ForwardRight, Forward, ForwardLeft,
     Left, Right,
     BackwardRight, Backward, BackwardLeft,
+    Empty
 }
 
 public enum Team

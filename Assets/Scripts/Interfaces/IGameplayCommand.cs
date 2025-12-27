@@ -4,7 +4,8 @@ using UnityEngine;
 
 public interface IGameplayCommand 
 {
-    IEnumerable<Cell> Variants { get;  }
-    
+    //public HashSet<Cell> Cells { get; }
+    public Dictionary<Cell, List<Cell>> CellsDictionary { get; }
+
     void Interact (Cell cell);
 }
