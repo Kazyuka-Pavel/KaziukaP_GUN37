@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Zenject;
 
 public class Battlefield : IDisposable
@@ -21,29 +22,19 @@ public class Battlefield : IDisposable
     private Unit[] _units;
     
 
-    private void Callback()
+    private void Callback(GameEvent gameEvent)
     {
-        //Снимается выделение
-        foreach (var cell in _cells)
-            cell.ResetSelect();
+        if (gameEvent != GameEvent.SelectUnit && gameEvent != GameEvent.SelectCell) return;
 
-        foreach (var unit in _units)
-            unit.ResetSelect();
+        //Снимается выделение
+        ResetSelect();
 
         //Подсветка выделенного
         if (_data.Destination != null)
             _data.Destination.SetSelect(_paletters.SelectCell);
-
-        //Выбор материаа, в завсимости от статуса
-        var mat = _data.Status switch
-        {
-            GameStatus.Move => _paletters.MoveCell,
-            GameStatus.Attack => _paletters.AttackCell,
-            _ => default(Material)
-        };
-        if (mat != null)
-            foreach (var cell in _command.CellsDictionary)
-                cell.Key.SetSelect(mat);
+        
+        foreach (var cell in _command.CellsDictionary)
+                cell.Key.SetSelect(_paletters.MoveCell);
         if (_data.Target != null)
             _data.Target.SetSelect(_paletters.ConfirmCell);
     }
@@ -94,6 +85,16 @@ public class Battlefield : IDisposable
                         _neighbours[key] = _cells[j];
                 }
             }
+        };
+        // Установим признак послдений ячейки для контроля преобразования в дамку.
+        for (int i = 0, iMax = _cells.Length; i < iMax; i++)
+        {
+            var keyRight = new CellNeighbour(NeighbourType.Forward, _cells[i]);
+            var keyLeft = new CellNeighbour(NeighbourType.Backward, _cells[i]);
+            if (!_neighbours.ContainsKey(keyLeft) || !_neighbours.ContainsKey(keyRight))
+            {
+                _cells[i].IsLast = true;
+            }
         }
         ;
         _units = UnityEngine.Object.FindObjectsOfType<Unit>();
@@ -140,6 +141,16 @@ public class Battlefield : IDisposable
         {
             _cells[0].OnPointerClickEvent -= OnCellClicked;
         }
+    }
+
+    public void ResetSelect()
+    {
+        //Снимается выделение
+        foreach (var cell in _cells)
+            cell.ResetSelect();
+
+        foreach (var unit in _units)
+            unit.ResetSelect();
     }
 
     /// <summary>

@@ -20,23 +20,16 @@ public enum Type
     Checker, Queen
 }
 
-public enum GameStatus
-{
-    Error = 0,
-    Lock = 1,
-    Unlock = 2,
-    Select = 3,
-    Move = 4,
-    Attack = 5,
-    Confirm = 6
-}
-
 public enum GameEvent
 {
-    Empty   = 0,
-    Select  = 1, //Выбор какой-то клетки
-    Cancel  = 2, //Отмена последнего действия
-    Confirm = 3, //Подтвержение последнего действия
-    NewTurn = 4, //Новый ход
+    Empty       = 0, //Пустой   
+    SelectUnit  = 1, //Выбор игрока                         //CheckerCommand 
+    SelectCell  = 2, //Выбор какой-то клетки                //CheckerCommand 
+    Cancel      = 3, //Отмена последнего действия           //BattleController - откат выделении и выбора
+    Confirm     = 4, //Подтвержение последнего действия     //PlayerController - предвижение шашек и механика поглощения
+    Play        = 5, //Подтвержение последнего действия     //PlayerController - проигрывание передвижения
+    End         = 6, //Конец хода                           //CheckerCommand   - завершения механики передвижения шашек (контроль преобрзования в дамки)
+    NewTurn     = 7, //Новый ход                            //BattleController - откат выделении и выбора и переход к другой стороне
+    
 }
 

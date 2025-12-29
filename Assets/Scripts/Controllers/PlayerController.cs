@@ -18,48 +18,33 @@ public class PlayerController : MonoBehaviour
     {
         //Подписка на сигнал типа GameEvent
         (_signal, _data) = (signal, data);
-        _signal.Subscribe<GameEvent>(StartPlay);
+        _signal.Subscribe<GameEvent>(Callback);
     }
 
-    private void StartPlay(GameEvent arg)
+    private void Callback(GameEvent arg)
     {
         if (arg is not GameEvent.Confirm) return; //Если не подтверждено, то продолжить
-        if (_data.Status is not GameStatus.Confirm) return; //Проверяем, что находимся в игровом статусе Confirm
+        if (_data.Event is not GameEvent.Confirm) return;
 
-        _data.Status = GameStatus.Lock; //Лочится управление
         var destination = _data.Destination;
 
         //Движение к точке
         if (_data.Target.Unit == null)
         {
+            _data.Event = GameEvent.Play;
             destination.OnMoveEndCallback += OnEndPlay;
             destination.Move(_data.Target);
         }
-        //Атака по цели
-        else
-        {
-            //var target = _data.Target.Unit;
-            //target.Health -= destination.Settings.Stats.Damage;
-            //if (target.Health <= 0)
-            //{
-            //    _data.Target.Unit = null;
-            //    Destroy(target.gameObject);
-            //}
-            //_data.Target = null;
-            //_data.Status = GameStatus.Unlock;
-        }
-
     }
-
 
     private void OnEndPlay() 
     {        
         _data.Destination.OnMoveEndCallback -= OnEndPlay;
         foreach (var cell in _data.Cells)
         {
-            if (!cell.IsEmpty)
+            if ((!cell.IsEmpty) && (cell != _data.Target))
                 cell.Unit.DestroyGameObject();
         }
-        _signal.Fire(GameEvent.NewTurn);        
+        _signal.Fire(GameEvent.End); 
     }
 }

@@ -25,21 +25,20 @@ public class BattleController : MonoBehaviour
 
     private void OnConfirm(InputAction.CallbackContext obj)
     {
+        if (_data.Event is GameEvent.Play) return;
         if (_data.Target == null)
         {
             Debug.Log("Non selected cell");
             return;
         }
-
-        _data.Status = GameStatus.Confirm;
         _data.Event = GameEvent.Confirm;
-        //_signal.Fire(GameStatus.Confirm);
         _signal.Fire(GameEvent.Confirm);
     }
 
     // Обработка инпута. Стандартный экшен.
     private void OnCancel(InputAction.CallbackContext obj)
     {
+        if (_data.Event is GameEvent.Play) return;
         _signal.Fire(GameEvent.Cancel);
     }
 
@@ -49,37 +48,22 @@ public class BattleController : MonoBehaviour
         switch (arg)
         {
             case GameEvent.NewTurn:
-                _data.Status = GameStatus.Select ;
                 _data.Target = null;
                 _data.Cells.Clear();
                 _data.Destination = null; 
                 _command.CellsDictionary.Clear();
+                _battlefield.ResetSelect();
+                _data.Event = GameEvent.SelectUnit;
+                _signal.Fire(GameEvent.SelectUnit);
                 break;
             case GameEvent.Cancel:
-                _data.Status = GameStatus.Select;
                 _data.Target = null;
                 _data.Destination = null;
                 _data.Cells.Clear();
                 _command.CellsDictionary.Clear();
+                _data.Event = GameEvent.SelectUnit;
+                _signal.Fire(GameEvent.SelectUnit);
                 break;
         }
-        
-        //if (arg is not GameEvent.Select) return;
-
-        //switch (_data.Status)
-        //{
-        //    case GameStatus.Select:
-        //        _data.Status = GameStatus.Move;                
-        //        break;
-        //    case GameStatus.Move:
-        //        _signal.Fire(GameStatus.Confirm);
-        //        break;
-        //    case GameStatus.Attack:
-        //        _signal.Fire(GameStatus.Confirm);
-        //        break;
-        //    case GameStatus.Confirm:
-        //        Debug.LogError("Incorrect value");
-        //        break;
-        //}
     }   
 }

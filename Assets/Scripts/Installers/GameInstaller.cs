@@ -20,7 +20,6 @@ public class GameInstaller : MonoInstaller
         // Паттерн 
         SignalBusInstaller.Install(Container);
         Container.DeclareSignal<GameEvent>();   // регистрация
-        Container.DeclareSignal<GameStatus>();  // регистрация
 
         _controls = new Controls();
         _controls.Game.Enable();
@@ -56,8 +55,8 @@ public class GameInstaller : MonoInstaller
     {
         var data = Container.Resolve<ISharedData>();
         var signal = Container.Resolve<SignalBus>();
-        signal.Fire(GameEvent.NewTurn);
-        data.Status = GameStatus.Select;
+        data.Event = GameEvent.NewTurn;
+        signal.Fire(GameEvent.NewTurn);        
     }
 
     private void OnDestroy()

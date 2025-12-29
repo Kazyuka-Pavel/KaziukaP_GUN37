@@ -22,20 +22,20 @@ public class AudioController : MonoBehaviour
     }
     private void Callback(GameEvent gameEvent) 
     {
-        var clip = default(AudioClip);
-        switch (gameEvent) 
-        { 
-            case GameEvent.Select:
-                clip = _selectSource;
-                break;
-            case GameEvent.Cancel:
-                clip = _cancelSource;
-                break;
-            case GameEvent.Confirm:
-                clip = _confirmSource;
-                break;
-        }
-        _source.clip = clip;
-        _source.Play();
+        //var clip = default(AudioClip);
+        //switch (gameEvent) 
+        //{ 
+        //    case GameEvent.SelectUnit:
+        //        clip = _selectSource;
+        //        break;
+        //    case GameEvent.Cancel:
+        //        clip = _cancelSource;
+        //        break;
+        //    case GameEvent.Confirm:
+        //        clip = _confirmSource;
+        //        break;
+        //}
+        //_source.clip = clip;
+        //_source.Play();
     }
 }

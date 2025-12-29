@@ -12,15 +12,21 @@ using Zenject;
 public class CheckerCommand : IGameplayCommand
 // Правила для шашек
 { 
-    //public HashSet<Cell> Cells { get; private set; } = new HashSet<Cell>();
     public Dictionary<Cell, List<Cell>> CellsDictionary { get; private set; } = new Dictionary<Cell, List<Cell>>(); //массив Cells - это списаок ячеек на пути
 
-    [Inject] private ISharedData _data;
-    [Inject] private ITurn _turn;
-    [Inject] private CellPaletteSettings _settings;
-    [Inject] private Battlefield _battlefield;
-    [Inject] private SignalBus _signal;
-    [Inject] private UnitGameSettings _queenSettings;
+    private ISharedData _data;                  //injecred
+    private ITurn _turn;                        //injecred
+    private CellPaletteSettings _settings;      //injecred
+    private Battlefield _battlefield;           //injecred
+    private SignalBus _signal;                  //injecred
+    private UnitGameSettings _queenSettings;    //injecred
+
+    [Inject]
+    private void Construct(Battlefield battlefield, ISharedData data, SignalBus signal, UnitGameSettings queenSettings, CellPaletteSettings settings, ITurn turn)
+    {
+        (_battlefield, _data, _signal, _queenSettings, _settings, _turn) = (battlefield, data, signal, queenSettings, settings, turn);
+        _signal.Subscribe<GameEvent>(Callback); //Подпись на событие GameEvent
+    }
 
     public void Calculate(Unit unit)
     {;
@@ -44,9 +50,26 @@ public class CheckerCommand : IGameplayCommand
         {
             CheckDirection(unit, isQueen, directions[i]);
         }
+        if (!isQueen)
+        {
+            var directionsForward =
+                unit.Team is Team.White
+                ? stackalloc NeighbourType[]
+                {
+                    NeighbourType.ForwardLeft,NeighbourType.ForwardRight
+                }
+                : stackalloc NeighbourType[]
+                {
+                    NeighbourType.BackwardLeft,NeighbourType.BackwardRight
+                };
+            for (int i = 0; i < directionsForward.Length; i++)
+            {
+                CheckDirection(unit, isQueen, directionsForward[i], true);
+            }
+        }        
     }
 
-    private void CheckDirection(Unit unit, bool isQueen, NeighbourType direction)
+    private void CheckDirection(Unit unit, bool isQueen, NeighbourType direction,bool OnlyWithUnit = false)
     {
         var cell = unit.Cell;
         var cells = new List<Cell>();
@@ -56,7 +79,7 @@ public class CheckerCommand : IGameplayCommand
             if (target.Unit == null) //если на клетке нет юнита, то можно туда сходить
             {
                 //Cells.Add(target);
-                if (!CellsDictionary.ContainsKey(target)) CellsDictionary.Add(target, cells);                
+                if ((!CellsDictionary.ContainsKey(target)) && (!OnlyWithUnit)) CellsDictionary.Add(target, cells);                
                 if (isQueen)
                 {
                     cells.Add(target);
@@ -79,22 +102,21 @@ public class CheckerCommand : IGameplayCommand
             if (!CellsDictionary.ContainsKey(target)) CellsDictionary.Add(target, cells);
         }
     }
-
-
     public void Interact(Cell cell)
     {
-        switch (_data.Status)
+        if (_data.Event is GameEvent.Play) return;
+        switch (_data.Event)
         {
-            case GameStatus.Select:
+            case GameEvent.SelectUnit:
                 if (cell.Unit != null && cell.Unit.Team == _turn.Current)
                 {
-                    _data.Destination = cell.Unit;
-                    _data.Status = GameStatus.Move;
+                    _data.Destination = cell.Unit;                    
                     Calculate(cell.Unit);
-                    _signal.Fire(GameEvent.Select);
+                    _signal.Fire(GameEvent.SelectUnit);
+                    _data.Event = GameEvent.SelectCell;
                 }
                 break;
-            case GameStatus.Move:
+            case GameEvent.SelectCell:
                 //if (Cells.Contains(cell))
                 if (CellsDictionary.ContainsKey(cell))                        
                 {
@@ -102,12 +124,21 @@ public class CheckerCommand : IGameplayCommand
                     _data.Cells.Clear();
                     if (CellsDictionary.TryGetValue(cell,out List<Cell> value))
                         _data.Cells.AddRange(value);
-                    _signal.Fire(GameEvent.Confirm);
+                    _signal.Fire(GameEvent.SelectCell);
                 }
                 break;
         }              
     }
-
+    private void Callback(GameEvent arg)
+    {
+        switch (arg)
+        {
+            case GameEvent.End:      
+                if (_data.Target.IsLast) _data.Destination.SetQueen(_queenSettings);
+                _signal.Fire(GameEvent.NewTurn);
+                break;
+        }
+    }
     private readonly struct CellsVariables : IEquatable<CellsVariables>
     {        
         private readonly Cell _cell;
@@ -121,9 +152,7 @@ public class CheckerCommand : IGameplayCommand
 
         public override int GetHashCode()
             => unchecked(HashCode.Combine(_cell, _cells) - 13);
-
     }
-
 }
 
 

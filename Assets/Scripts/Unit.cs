@@ -30,7 +30,7 @@ public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
         StartCoroutine(OnMove(cell));
     }
 
-    private float _speed = 1f;
+    private float _speed = 2f;
 
     private IEnumerator OnMove(Cell cell)
     {
@@ -57,6 +57,12 @@ public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
     {
         Cell = cell;
     }
+
+    public void SetQueen(UnitGameSettings settings)
+    {
+        queenMesh.enabled = true;
+        Settings = settings;
+    }    
 
     private void Awake()
     {

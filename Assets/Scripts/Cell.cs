@@ -14,6 +14,7 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
 
     public event Action<Cell> OnPointerClickEvent;
     public bool IsEmpty => Unit == null;
+    public bool IsLast;
 
     public void SetSelect(Material material)
     {
