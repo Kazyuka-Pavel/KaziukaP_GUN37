@@ -5,6 +5,7 @@ using TMPro;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
+using System.Linq;
 using Zenject;
 
 //Паттерн комманд
@@ -12,24 +13,29 @@ using Zenject;
 public class CheckerCommand : IGameplayCommand
 // Правила для шашек
 { 
-    public Dictionary<Cell, List<Cell>> CellsDictionary { get; private set; } = new Dictionary<Cell, List<Cell>>(); //массив Cells - это списаок ячеек на пути
+    public Dictionary<Cell, List<Cell>> CellsDictionaryWalk { get; private set; } = new Dictionary<Cell, List<Cell>>(); //массив Cells - это списаок ячеек на пути
+    public Dictionary<Cell, List<Cell>> CellsDictionaryAttack { get; private set; } = new Dictionary<Cell, List<Cell>>(); //массив Cells - это списаок ячеек на пути
+    public HashSet<Unit> UnitsAttack { get; private set; } = new HashSet<Unit>();        // - юнит, обзязательный к атаке
 
-    private ISharedData _data;                  //injecred
-    private ITurn _turn;                        //injecred
-    private CellPaletteSettings _settings;      //injecred
-    private Battlefield _battlefield;           //injecred
-    private SignalBus _signal;                  //injecred
-    private UnitGameSettings _queenSettings;    //injecred
+    private ISharedData _data;                  //injected
+    private ITurn _turn;                        //injected
+    private CellPaletteSettings _settings;      //injected
+    private Battlefield _battlefield;           //injected
+    private SignalBus _signal;                  //injected
+    private UnitGameSettings _queenSettings;    //injected
+    private List<Unit> _units;                  //injected
 
     [Inject]
-    private void Construct(Battlefield battlefield, ISharedData data, SignalBus signal, UnitGameSettings queenSettings, CellPaletteSettings settings, ITurn turn)
+    private void Construct(Battlefield battlefield, ISharedData data, SignalBus signal, UnitGameSettings queenSettings, CellPaletteSettings settings, ITurn turn, List<Unit> units)
     {
-        (_battlefield, _data, _signal, _queenSettings, _settings, _turn) = (battlefield, data, signal, queenSettings, settings, turn);
+        (_battlefield, _data, _signal, _queenSettings, _settings, _turn, _units) = (battlefield, data, signal, queenSettings, settings, turn, units);
         _signal.Subscribe<GameEvent>(Callback); //Подпись на событие GameEvent
     }
 
     public void Calculate(Unit unit)
-    {;
+    {
+        CellsDictionaryWalk.Clear();
+        CellsDictionaryAttack.Clear();
         var isQueen = (unit.Settings == _queenSettings); //Есди дам, то можно ходить в любом напрвлении
         var directions = isQueen
             ? stackalloc NeighbourType[]
@@ -79,7 +85,7 @@ public class CheckerCommand : IGameplayCommand
             if (target.Unit == null) //если на клетке нет юнита, то можно туда сходить
             {
                 //Cells.Add(target);
-                if ((!CellsDictionary.ContainsKey(target)) && (!OnlyWithUnit)) CellsDictionary.Add(target, cells);                
+                if ((!CellsDictionaryWalk.ContainsKey(target)) && (!OnlyWithUnit)) CellsDictionaryWalk.Add(target, cells);                
                 if (isQueen)
                 {
                     cells.Add(target);
@@ -99,7 +105,11 @@ public class CheckerCommand : IGameplayCommand
             if (target.Unit != null)
                 return;
             //Cells.Add(target);
-            if (!CellsDictionary.ContainsKey(target)) CellsDictionary.Add(target, cells);
+            if (!CellsDictionaryAttack.ContainsKey(target)) 
+            {
+                CellsDictionaryAttack.Add(target, cells);
+                return; 
+            }                
         }
     }
     public void Interact(Cell cell)
@@ -108,21 +118,30 @@ public class CheckerCommand : IGameplayCommand
         switch (_data.Event)
         {
             case GameEvent.SelectUnit:
-                if (cell.Unit != null && cell.Unit.Team == _turn.Current)
-                {
-                    _data.Destination = cell.Unit;                    
-                    Calculate(cell.Unit);
-                    _signal.Fire(GameEvent.SelectUnit);
-                    _data.Event = GameEvent.SelectCell;
-                }
+                if (cell.Unit == null) break;
+                if (UnitsAttack.Count > 0)
+                    if (!UnitsAttack.Contains(cell.Unit)) break;
+                if (cell.Unit.Team != _turn.Current) break;
+                _data.Destination = cell.Unit;
+                Calculate(cell.Unit);
+                _signal.Fire(GameEvent.SelectUnit);
+                _data.Event = GameEvent.SelectCell;
                 break;
             case GameEvent.SelectCell:
                 //if (Cells.Contains(cell))
-                if (CellsDictionary.ContainsKey(cell))                        
+                if (CellsDictionaryAttack.ContainsKey(cell))                        
                 {
                     _data.Target = cell;
                     _data.Cells.Clear();
-                    if (CellsDictionary.TryGetValue(cell,out List<Cell> value))
+                    if (CellsDictionaryAttack.TryGetValue(cell,out List<Cell> value))
+                        _data.Cells.AddRange(value);
+                    _signal.Fire(GameEvent.SelectCell);
+                }
+                else if (CellsDictionaryWalk.ContainsKey(cell))
+                {
+                    _data.Target = cell;
+                    _data.Cells.Clear();
+                    if (CellsDictionaryAttack.TryGetValue(cell, out List<Cell> value))
                         _data.Cells.AddRange(value);
                     _signal.Fire(GameEvent.SelectCell);
                 }
@@ -133,9 +152,44 @@ public class CheckerCommand : IGameplayCommand
     {
         switch (arg)
         {
-            case GameEvent.End:      
-                if (_data.Target.IsLast) _data.Destination.SetQueen(_queenSettings);
-                _signal.Fire(GameEvent.NewTurn);
+            case GameEvent.StartTurn:
+                //Првоерим обязательные ходы
+                var selectedUnits = from unit in _units
+                                    where unit.Team == _turn.Current
+                                    select unit;
+                foreach (var selectedUnit in selectedUnits)
+                {
+                    Calculate(selectedUnit);
+                    if (CellsDictionaryAttack.Count > 0) UnitsAttack.Add(selectedUnit);
+                }
+                CellsDictionaryAttack.Clear();
+                CellsDictionaryWalk.Clear();
+                _data.Event = GameEvent.SelectUnit;
+                _signal.Fire(GameEvent.SelectUnit);
+                break;
+            case GameEvent.End:
+                var destroy = false;
+                foreach (var cell in _data.Cells)
+                {
+                    if ((!cell.IsEmpty) && (cell != _data.Target))
+                    {
+                        cell.Unit.DestroyGameObject();
+                        destroy = true;
+                    }                        
+                }
+                if (_data.Target.IsLast)
+                {
+                    _data.Destination.SetQueen(_queenSettings);
+                }
+                UnitsAttack.Clear();
+                Calculate(_data.Destination);                
+                if (CellsDictionaryAttack.Count == 0 || !destroy) _signal.Fire(GameEvent.NewTurn);
+                else
+                {
+                    UnitsAttack.Add(_data.Destination);
+                    _data.Event = GameEvent.SelectCell;
+                    _signal.Fire(GameEvent.SelectCell);
+                }                     
                 break;
         }
     }

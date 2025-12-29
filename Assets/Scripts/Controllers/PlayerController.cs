@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour
 {
     private SignalBus   _signal;    //injected
     private ISharedData _data;      //injected
-    private float _speed = 1f;
 
     [Inject]
     private void Construct(SignalBus signal, ISharedData data)
@@ -39,12 +38,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnEndPlay() 
     {        
-        _data.Destination.OnMoveEndCallback -= OnEndPlay;
-        foreach (var cell in _data.Cells)
-        {
-            if ((!cell.IsEmpty) && (cell != _data.Target))
-                cell.Unit.DestroyGameObject();
-        }
+        _data.Destination.OnMoveEndCallback -= OnEndPlay;        
         _signal.Fire(GameEvent.End); 
     }
 }

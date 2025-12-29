@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using UnityEngine;
 using Zenject;
 
@@ -25,7 +26,7 @@ public class GameInstaller : MonoInstaller
         _controls.Game.Enable();
         Container.BindInstance(_controls.Game).AsSingle();
 
-        _sceneController = new SceneController();
+        _sceneController = ScriptableObject.CreateInstance<SceneController>();
         Container.BindInstance(_sceneController).AsSingle();
 
         Container.BindInstances(FindAnyObjectByType<Cell>());
@@ -39,7 +40,7 @@ public class GameInstaller : MonoInstaller
 
         Container.BindInstance(FindAnyObjectByType<TurnIndicator>()).AsSingle();        
 
-        var units = FindObjectOfType<Unit>();
+        var units = FindObjectsOfType<Unit>().ToList<Unit>();
         Container.BindInstance(units).AsSingle();
 
         // не получилось
@@ -49,14 +50,6 @@ public class GameInstaller : MonoInstaller
         Container.Bind<ITurn>().To<OneByOneTurn>().AsSingle().WithArguments(teams);
         Container.Bind<ISharedData>().To<SingleSharedData>().AsSingle();
         Container.Bind<IGameplayCommand>().To<CheckerCommand>().AsSingle();
-    }
-
-    private void Start()
-    {
-        var data = Container.Resolve<ISharedData>();
-        var signal = Container.Resolve<SignalBus>();
-        data.Event = GameEvent.NewTurn;
-        signal.Fire(GameEvent.NewTurn);        
     }
 
     private void OnDestroy()

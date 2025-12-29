@@ -7,8 +7,6 @@ public class SceneController : ScriptableObject
 {    
     public void RestartGameScene()
     {
-        //SceneManager.UnloadSceneAsync(0);
-        //SceneManager.LoadSceneAsync(0);
         SceneManager.LoadScene(0);
     }
 }

@@ -14,8 +14,6 @@ public class TurnIndicator : MonoBehaviour
 
     [SerializeField, Space(15f)]                    private TextMeshPro _rightIcon;
     [SerializeField]                                private Image       _rightArrow;
-    [SerializeField, Space(15f), Range(.1f, 2f)]    private float       _disableScale = .7f;
-    [SerializeField, Range(0f, 1f)]                 private float       _disableAlpha = .3f;
 
     private (Team team, TextMeshPro icon, Image arrow) _left;
     private (Team team, TextMeshPro icon, Image arrow) _right;
@@ -27,7 +25,7 @@ public class TurnIndicator : MonoBehaviour
             default:
                 return;
             case GameEvent.NewTurn:
-                _turn.Next();
+                _turn.Next();                
                 break;
         }
 

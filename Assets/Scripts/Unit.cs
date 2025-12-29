@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using ModestTree;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Zenject;
+using static UnityEngine.UI.CanvasScaler;
 
 public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
@@ -12,7 +14,9 @@ public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
     [field: SerializeField]    public UnitGameSettings Settings { get; private set; }
     [SerializeField] private MeshRenderer cylinderMesh;
     [SerializeField] private MeshRenderer queenMesh;
-    [Inject] private UnitsSettings _unitsSettings;
+
+    [Inject] private UnitsSettings  _unitsSettings;
+    [Inject] private List<Unit>     _units;
 
     public Cell Cell {  get; private set; }
 
@@ -84,6 +88,7 @@ public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
 
     public void DestroyGameObject()
     {
+        _units.Remove(this);
         Cell.Unit = null;
         Cell = null;
         OnDestoroy.Invoke(this);

@@ -29,12 +29,24 @@ public class Battlefield : IDisposable
         //Снимается выделение
         ResetSelect();
 
+        if(gameEvent == GameEvent.SelectUnit && _data.Destination is null && _command.UnitsAttack.Count > 0)
+        {
+            foreach (var unit in _command.UnitsAttack)
+                unit.SetSelect(_paletters.AttackCell);
+            return;
+        }                
+
         //Подсветка выделенного
         if (_data.Destination != null)
             _data.Destination.SetSelect(_paletters.SelectCell);
-        
-        foreach (var cell in _command.CellsDictionary)
-                cell.Key.SetSelect(_paletters.MoveCell);
+
+        foreach (var cell in _command.CellsDictionaryAttack)
+            cell.Key.SetSelect(_paletters.AttackCell);
+
+        if (_command.CellsDictionaryAttack.Count == 0)
+        foreach (var cell in _command.CellsDictionaryWalk)
+                cell.Key.SetSelect(_paletters.MoveCell);        
+
         if (_data.Target != null)
             _data.Target.SetSelect(_paletters.ConfirmCell);
     }
@@ -98,10 +110,10 @@ public class Battlefield : IDisposable
         }
         ;
         _units = UnityEngine.Object.FindObjectsOfType<Unit>();
-        var positionsj = Array.ConvertAll(_units, t => t.transform.position);
-        var iMin = 0;
+        var positionsj = Array.ConvertAll(_units, t => t.transform.position);        
         for (int j = 0, jMax = _units.Length; j < jMax; j++)
         {
+            var iMin = -1;
             _units[j].OnDestoroy += OnDestoroyUnit;
             for (int i = 0, iMax = _cells.Length; i < iMax; i++)
             {
@@ -117,10 +129,14 @@ public class Battlefield : IDisposable
                     iMin = i;
                 }
             }
-            if (iMin != 0)
+            if (iMin != -1)
             {
                 _units[j].SetCell(_cells[iMin]);
                 _cells[iMin].Unit = _units[j];
+            }
+            else
+            {
+                Debug.Log("Несопоставлена ячейка " + _units[j].ToString());
             }
         }
     }

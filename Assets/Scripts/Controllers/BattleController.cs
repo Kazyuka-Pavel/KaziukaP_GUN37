@@ -23,6 +23,12 @@ public class BattleController : MonoBehaviour
         _signal.Subscribe<GameEvent>(Callback); //Подпись на событие GameEvent
     }
 
+    private void Start()
+    {
+        _data.Event = GameEvent.NewTurn;
+        _signal.Fire(GameEvent.NewTurn);
+    }
+
     private void OnConfirm(InputAction.CallbackContext obj)
     {
         if (_data.Event is GameEvent.Play) return;
@@ -51,16 +57,17 @@ public class BattleController : MonoBehaviour
                 _data.Target = null;
                 _data.Cells.Clear();
                 _data.Destination = null; 
-                _command.CellsDictionary.Clear();
+                _command.CellsDictionaryAttack.Clear();
+                _command.CellsDictionaryWalk.Clear();
                 _battlefield.ResetSelect();
-                _data.Event = GameEvent.SelectUnit;
-                _signal.Fire(GameEvent.SelectUnit);
+                _signal.Fire(GameEvent.StartTurn);                
                 break;
             case GameEvent.Cancel:
                 _data.Target = null;
                 _data.Destination = null;
                 _data.Cells.Clear();
-                _command.CellsDictionary.Clear();
+                _command.CellsDictionaryAttack.Clear();
+                _command.CellsDictionaryWalk.Clear();
                 _data.Event = GameEvent.SelectUnit;
                 _signal.Fire(GameEvent.SelectUnit);
                 break;
