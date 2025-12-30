@@ -35,17 +35,57 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Cancel"",
+                    ""type"": ""Button"",
+                    ""id"": ""a183bc07-630b-432e-9aad-e38a434e392a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Confirm"",
+                    ""type"": ""Button"",
+                    ""id"": ""0b30469a-6f40-4eee-9725-f00029761a09"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
                 {
                     ""name"": """",
                     ""id"": ""7d607963-7109-483b-93f8-8ca4568cfda4"",
-                    ""path"": ""<Keyboard>/r"",
+                    ""path"": ""<Keyboard>/tab"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Restart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""91faeb42-f251-42e3-b273-a8d02fea7f1c"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Cancel"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ce4c0ae2-5c91-4ddb-8489-a8fa823c9bf3"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Confirm"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -91,6 +131,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         // Game
         m_Game = asset.FindActionMap("Game", throwIfNotFound: true);
         m_Game_Restart = m_Game.FindAction("Restart", throwIfNotFound: true);
+        m_Game_Cancel = m_Game.FindAction("Cancel", throwIfNotFound: true);
+        m_Game_Confirm = m_Game.FindAction("Confirm", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
         m_Menu_StrartGame = m_Menu.FindAction("StrartGame", throwIfNotFound: true);
@@ -156,11 +198,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Game;
     private List<IGameActions> m_GameActionsCallbackInterfaces = new List<IGameActions>();
     private readonly InputAction m_Game_Restart;
+    private readonly InputAction m_Game_Cancel;
+    private readonly InputAction m_Game_Confirm;
     public struct GameActions
     {
         private @Controls m_Wrapper;
         public GameActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Restart => m_Wrapper.m_Game_Restart;
+        public InputAction @Cancel => m_Wrapper.m_Game_Cancel;
+        public InputAction @Confirm => m_Wrapper.m_Game_Confirm;
         public InputActionMap Get() { return m_Wrapper.m_Game; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -173,6 +219,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Restart.started += instance.OnRestart;
             @Restart.performed += instance.OnRestart;
             @Restart.canceled += instance.OnRestart;
+            @Cancel.started += instance.OnCancel;
+            @Cancel.performed += instance.OnCancel;
+            @Cancel.canceled += instance.OnCancel;
+            @Confirm.started += instance.OnConfirm;
+            @Confirm.performed += instance.OnConfirm;
+            @Confirm.canceled += instance.OnConfirm;
         }
 
         private void UnregisterCallbacks(IGameActions instance)
@@ -180,6 +232,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Restart.started -= instance.OnRestart;
             @Restart.performed -= instance.OnRestart;
             @Restart.canceled -= instance.OnRestart;
+            @Cancel.started -= instance.OnCancel;
+            @Cancel.performed -= instance.OnCancel;
+            @Cancel.canceled -= instance.OnCancel;
+            @Confirm.started -= instance.OnConfirm;
+            @Confirm.performed -= instance.OnConfirm;
+            @Confirm.canceled -= instance.OnConfirm;
         }
 
         public void RemoveCallbacks(IGameActions instance)
@@ -255,6 +313,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     public interface IGameActions
     {
         void OnRestart(InputAction.CallbackContext context);
+        void OnCancel(InputAction.CallbackContext context);
+        void OnConfirm(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

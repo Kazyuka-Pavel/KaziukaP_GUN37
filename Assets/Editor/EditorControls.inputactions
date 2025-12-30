@@ -1,0 +1,54 @@
+{
+    "name": "EditorControls",
+    "maps": [
+        {
+            "name": "Main",
+            "id": "a6b83210-d781-4b5f-a66b-dd52e37c980b",
+            "actions": [
+                {
+                    "name": "NextTurn",
+                    "type": "Button",
+                    "id": "f56d7b94-075f-4cff-a9dd-89cc71ec0c20",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Kill",
+                    "type": "Button",
+                    "id": "7163ba37-3976-4f17-b09c-4d4e0dcdbe57",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "05b1eb18-8826-45c4-84d5-cffafc8dbabd",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NextTurn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "12e234a3-5834-4dcd-8c1b-7f95d905525d",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Kill",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

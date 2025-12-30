@@ -1,29 +1,97 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using ModestTree;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Zenject;
+using static UnityEngine.UI.CanvasScaler;
 
 public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
-    [SerializeField]
-    private Cell _cell;
+    [field: SerializeField]    public Team Team { get; private set; }
+    [field: SerializeField]    public UnitGameSettings Settings { get; private set; }
+    [SerializeField] private MeshRenderer cylinderMesh;
+    [SerializeField] private MeshRenderer queenMesh;
 
-    public event Action<Cell, Unit> OnMoveEndCallback;
+    [Inject] private UnitsSettings  _unitsSettings;
+    [Inject] private List<Unit>     _units;
 
-    public void OnPointerClick(PointerEventData eventData) => _cell.OnPointerClick(eventData);
+    public Cell Cell {  get; private set; }
+
+    public event Action OnMoveEndCallback;
+    public event Action<Unit> OnDestoroy;
+
+    public void OnPointerClick(PointerEventData eventData) => Cell.OnPointerClick(eventData);
     
-    public void OnPointerExit(PointerEventData eventData) => _cell.OnPointerExit(eventData);
+    public void OnPointerExit(PointerEventData eventData) => Cell.OnPointerExit(eventData);
 
-    public void OnPointerEnter(PointerEventData eventData) => _cell.OnPointerExit(eventData);
+    public void OnPointerEnter(PointerEventData eventData) => Cell.OnPointerExit(eventData);
 
     public void Move(Cell cell)
     {
-        _cell = cell;
+        StartCoroutine(OnMove(cell));
+    }
+
+    private float _speed = 2f;
+
+    private IEnumerator OnMove(Cell cell)
+    {
+        var source = transform;
+
+        var start = source.position;
+        var end = cell.transform.position;
+        end.y = start.y;
+        var time = Vector3.Distance(start, end) / _speed;
+        var delta = 0f;
+        while (delta < time)
+        {
+            source.position = Vector3.Lerp(start, end, delta / time);
+            delta += Time.deltaTime;
+            yield return null;
+        }
+        Cell.Unit = null;
+        Cell = cell;
+        cell.Unit = this;
+        OnMoveEndCallback?.Invoke();
     }
 
     public void SetCell(Cell cell)
     {
-        _cell = cell;
+        Cell = cell;
+    }
+
+    public void SetQueen(UnitGameSettings settings)
+    {
+        queenMesh.enabled = true;
+        Settings = settings;
+    }    
+
+    private void Awake()
+    {
+        ResetSelect();
+    }    
+
+    public void SetSelect(Material material)
+    {
+        cylinderMesh.material = material;
+        queenMesh.material = material;
+        Cell.SetSelect(material);
+    }
+
+    public void ResetSelect()
+    {
+        cylinderMesh.material = _unitsSettings[Team].Material;
+        queenMesh.material = _unitsSettings[Team].Material;
+    }
+
+    public void DestroyGameObject()
+    {
+        _units.Remove(this);
+        Cell.Unit = null;
+        Cell = null;
+        OnDestoroy.Invoke(this);
+        Destroy(gameObject);
     }
 }

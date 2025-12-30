@@ -11,32 +11,66 @@ public class BattleController : MonoBehaviour
     private ISharedData _data;                  //injected
     private SignalBus _signal;                  //injected
     private Controls.GameActions _controls;     //injected
-    private PlayerController _battlefield;      //injected
+    private Battlefield _battlefield;           //injected
 
+    [Inject]
+    private void Construct(IGameplayCommand command, ISharedData data, SignalBus signal,Battlefield battlefield, Controls.GameActions controls)
+    {
+        (_command, _data, _signal, _battlefield, _controls) = (command, data, signal, battlefield, controls);
+        _battlefield.OnCellClicked += _command.Interact;
+        _controls.Cancel.performed += OnCancel;
+        _controls.Confirm.performed += OnConfirm;
+        _signal.Subscribe<GameEvent>(Callback); //Подпись на событие GameEvent
+    }
+
+    private void Start()
+    {
+        _data.Event = GameEvent.NewTurn;
+        _signal.Fire(GameEvent.NewTurn);
+    }
+
+    private void OnConfirm(InputAction.CallbackContext obj)
+    {
+        if (_data.Event is GameEvent.Play) return;
+        if (_data.Target == null)
+        {
+            Debug.Log("Non selected cell");
+            return;
+        }
+        _data.Event = GameEvent.Confirm;
+        _signal.Fire(GameEvent.Confirm);
+    }
+
+    // Обработка инпута. Стандартный экшен.
     private void OnCancel(InputAction.CallbackContext obj)
     {
-        _data.Event = GameEvent.Cancel;
-        _data.Status = GameStatus.Select;
+        if (_data.Event is GameEvent.Play) return;
+        _signal.Fire(GameEvent.Cancel);
     }
 
+    //Переход в следующий режим
     private void Callback(GameEvent arg)
     {
-        if (arg is not GameEvent.Select) return;
-
-        switch (_data.Status)
+        switch (arg)
         {
-            case GameStatus.Select:
-                _signal.Fire(GameStatus.Move);
+            case GameEvent.NewTurn:
+                _data.Target = null;
+                _data.Cells.Clear();
+                _data.Destination = null; 
+                _command.CellsDictionaryAttack.Clear();
+                _command.CellsDictionaryWalk.Clear();
+                _battlefield.ResetSelect();
+                _signal.Fire(GameEvent.StartTurn);                
                 break;
-            case GameStatus.Move:
-                _signal.Fire(GameStatus.Confirm);
-                break;
-            case GameStatus.Attack:
-                _signal.Fire(GameStatus.Confirm);
-                break;
-            case GameStatus.Confirm:
-                Debug.LogError("Incorrect value");
+            case GameEvent.Cancel:
+                _data.Target = null;
+                _data.Destination = null;
+                _data.Cells.Clear();
+                _command.CellsDictionaryAttack.Clear();
+                _command.CellsDictionaryWalk.Clear();
+                _data.Event = GameEvent.SelectUnit;
+                _signal.Fire(GameEvent.SelectUnit);
                 break;
         }
-    }
+    }   
 }

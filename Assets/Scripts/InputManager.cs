@@ -4,26 +4,21 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using Zenject;
 
 public class InputManager : MonoBehaviour
 {
-    private Controls _controls;
-
     [SerializeField]    private GameObject              _image;
     [SerializeField]    private UnityEngine.UI.Image    _imageEm;
     [SerializeField]    private float                   _speed = 1;
-                        private SceneController         _sceneController;
+    [Inject]            private SceneController         _sceneController;
+    [Inject]            private Controls.GameActions    _controls;
 
     private void Awake()
-    {
-        _controls = new Controls();
-        _controls.Game.Enable();        
-
-        _controls.Game.Restart.started += Restart_started;
-        _controls.Game.Restart.performed += Restart_performed;
-        _controls.Game.Restart.canceled += Restart_canceled;
-
-        _sceneController = new SceneController();
+    {        
+        _controls.Restart.started += Restart_started;
+        _controls.Restart.performed += Restart_performed;
+        _controls.Restart.canceled += Restart_canceled;        
     }
 
     private void Restart_canceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
@@ -36,18 +31,30 @@ public class InputManager : MonoBehaviour
     }
 
     private void Restart_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {        
+        StartCoroutine(Loop());                
+    }
+
+    IEnumerator Loop()
     {
-        StartCoroutine(Loop());
-        IEnumerator Loop()
+        var i = 0f;
+        _imageEm.fillAmount = 0.1f;
+        for (i = _imageEm.fillAmount; i < 1f; i += Time.deltaTime * _speed)
         {
-            for (var i = _imageEm.fillAmount; i < 1f; i += Time.deltaTime * _speed)
+            if (_imageEm.fillAmount == 0)
             {
-                _imageEm.fillAmount = i;
-                yield return null;
+                break;
             }
-            StopCoroutine(Loop());
-            //Debug.Log("End");
-            _sceneController.RestartGameScene();
+            _imageEm.fillAmount = i;
+            yield return null;            
+        }
+        StopCoroutine(Loop());
+        //Debug.Log("End");
+        if (i >= 1f) {
+            _controls.Restart.started -= Restart_started;
+            _controls.Restart.performed -= Restart_performed;
+            _controls.Restart.canceled -= Restart_canceled;
+            _sceneController.RestartGameScene(); 
         }
     }
 

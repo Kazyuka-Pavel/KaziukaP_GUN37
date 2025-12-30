@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New CellPaletteSettings", menuName = "CellPaletteSettings", order = 51)]
+[CreateAssetMenu(fileName = "New CellPaletteSettings", menuName = "Settings/CellPaletteSettings", order = 51)]
 
 public class CellPaletteSettings : ScriptableObject
 {
@@ -20,6 +20,11 @@ public class CellPaletteSettings : ScriptableObject
     public Material AttackCell { get; private set; }
 
     [field: SerializeField]
+    [field: Tooltip("Клетка для подстверждения действия")]
+    public Material ConfirmCell { get; private set; }    
+
+    [field: SerializeField]
     [field: Tooltip("Клетка доступная и для атаки и для движения")]
     public Material MoveAndAttackCell { get; private set; }
+
 }
