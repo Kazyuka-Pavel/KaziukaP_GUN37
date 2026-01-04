@@ -15,6 +15,7 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
     public event Action<Cell> OnPointerClickEvent;
     public bool IsEmpty => Unit == null;
     public bool IsLast;
+    public bool focused;
 
     public void SetSelect(Material material)
     {
@@ -37,12 +38,14 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
     public void OnPointerEnter(PointerEventData eventData)
     {
         focusMesh.enabled = true;
+        focused = true;
     }
 
     //Событие через Рейкастер
     public void OnPointerExit(PointerEventData eventData)
     {
         focusMesh.enabled = false;
+        focused = false;
     }
     
 }

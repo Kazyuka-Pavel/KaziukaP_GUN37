@@ -27,7 +27,7 @@ public class Unit : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, I
     
     public void OnPointerExit(PointerEventData eventData) => Cell.OnPointerExit(eventData);
 
-    public void OnPointerEnter(PointerEventData eventData) => Cell.OnPointerExit(eventData);
+    public void OnPointerEnter(PointerEventData eventData) => Cell.OnPointerEnter(eventData);
 
     public void Move(Cell cell)
     {

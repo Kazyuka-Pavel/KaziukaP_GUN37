@@ -36,9 +36,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnEndPlay() 
-    {        
-        _data.Destination.OnMoveEndCallback -= OnEndPlay;        
-        _signal.Fire(GameEvent.End); 
+    private void OnEndPlay()
+    {
+        _data.Destination.OnMoveEndCallback -= OnEndPlay;
+        EndTurn();
+    }
+
+    private void EndTurn()
+    {
+        _signal.Fire(GameEvent.End);
     }
 }

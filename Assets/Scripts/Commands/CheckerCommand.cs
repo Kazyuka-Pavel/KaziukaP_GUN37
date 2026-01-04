@@ -34,6 +34,8 @@ public class CheckerCommand : IGameplayCommand
 
     public void Calculate(Unit unit)
     {
+        if (unit.IsUnityNull()) return;
+
         CellsDictionaryWalk.Clear();
         CellsDictionaryAttack.Clear();
         var isQueen = (unit.Settings == _queenSettings); //≈сди дам, то можно ходить в любом напрвлении
@@ -177,7 +179,7 @@ public class CheckerCommand : IGameplayCommand
                         destroy = true;
                     }                        
                 }
-                if (_data.Target.IsLast)
+                if (_data.Target != null  && _data.Target.IsLast)
                 {
                     _data.Destination.SetQueen(_queenSettings);
                 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
@@ -21,14 +22,36 @@ public static class EditorCheatWindow
 
     private static void OnKill(InputAction.CallbackContext obj)
     {
-        if (!EditorApplication.isPlaying) return;        
+        if (!EditorApplication.isPlaying) return;
+
+        var cells = UnityEngine.Object.FindObjectsOfType<Cell>();
+        var selectedcell= from c in cells where c.focused orderby c select c;
+        foreach (var cell in selectedcell)
+        {
+            if (!cell.IsEmpty)
+            {
+                cell.Unit.DestroyGameObject();
+            }
+        }            
     }
 
     private static void OnNewTurn(InputAction.CallbackContext obj)
     {
         if (!EditorApplication.isPlaying) return;
         
-        var controller      = UnityEngine.Object.FindObjectOfType<BattleController>();
+        var controller      = UnityEngine.Object.FindObjectOfType<PlayerController>();
+        var type = controller.GetType();
+        //var methodInfo = type.GetMethod("Callback", BindingFlags.Instance | BindingFlags.NonPublic); // приватый метод
+        //methodInfo.Invoke(controller, new object[] { GameEvent.NewTurn });
+        var methodInfo = type.GetMethod("EndTurn", BindingFlags.Instance | BindingFlags.NonPublic); // приватый метод
+        methodInfo.Invoke(controller, new object[] { });        
+    }
+
+    private static void Test()
+    {
+        if (!EditorApplication.isPlaying) return;
+
+        var controller = UnityEngine.Object.FindObjectOfType<BattleController>();
 
         var cell = UnityEngine.Object.FindObjectOfType<Cell>();
         //System.Type        
@@ -60,7 +83,7 @@ public static class EditorCheatWindow
         var serializedObject = new SerializedObject(cell);
         serializedObject.Update(); //подтягивание всех изменений из cell
         var property = serializedObject.FindProperty("focusMesh"); // не важно приватный или нет, если сериализуемый
-        property.objectReferenceValue = default(MeshRenderer);        
+        property.objectReferenceValue = default(MeshRenderer);
         serializedObject.ApplyModifiedProperties(); // оповещение об изменении (грязный)
     }
 }
