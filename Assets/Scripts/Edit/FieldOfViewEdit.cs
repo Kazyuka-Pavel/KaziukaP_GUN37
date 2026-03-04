@@ -5,7 +5,7 @@ using UnityEditor.TerrainTools;
 using UnityEngine;
 
 [CustomEditor(typeof(FildOnView))]
-public class FieldOfViewEdit : MonoBehaviour
+public class FieldOfViewEdit : Editor
 {
     private void OnSceneGUI()
     {
