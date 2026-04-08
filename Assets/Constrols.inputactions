@@ -1,0 +1,34 @@
+{
+    "name": "Constrols",
+    "maps": [
+        {
+            "name": "Main",
+            "id": "78f44b5a-078f-4fc6-8553-c7194dd44814",
+            "actions": [
+                {
+                    "name": "Restart",
+                    "type": "Button",
+                    "id": "505bee63-b4c5-4ec5-a0b4-befe50c197a0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "ff3f5797-ed56-4afa-a0ab-892387545ad5",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Restart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

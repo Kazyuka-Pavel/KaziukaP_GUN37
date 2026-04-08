@@ -16,5 +16,9 @@ public class GameInstaller : MonoInstaller
 
         var _indicatorController = new IndicatorController();
         Container.BindInstance(_indicatorController).AsSingle();
+
+        var controls = new Constrols();
+        controls.Main.Enable();
+        Container.BindInstance(controls.Main).AsSingle();
     }
 }

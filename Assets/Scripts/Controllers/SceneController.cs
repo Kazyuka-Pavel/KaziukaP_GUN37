@@ -5,8 +5,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneController : ScriptableObject
-{    
-    public void OpenMainScene()
+{
+    public void RestartGameScene()
     {
         SceneManager.LoadScene(0);
     }
